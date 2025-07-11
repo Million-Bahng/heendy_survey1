@@ -559,7 +559,10 @@
 
 
     <!-- 숨겨진 Netlify Form -->
-    <form name="heendy-survey" netlify hidden>
+    <form name="heendy-survey" netlify netlify-honeypot="bot-field" hidden>
+        <p hidden>
+            <label>Don't fill this out: <input name="bot-field" /></label>
+        </p>
         <input type="text" name="employeeId" />
         <input type="text" name="name" />
         <textarea name="survey1"></textarea>
@@ -569,11 +572,6 @@
         <input type="text" name="isWinner" />
         <input type="number" name="responseTime" />
         <input type="text" name="timestamp" />
-    </form>
-
-    <!-- 당첨자 수 체크용 숨겨진 폼 -->
-    <form name="winner-check" netlify hidden>
-        <input type="text" name="checkType" />
     </form>
     <div class="progress-header" id="progressHeader" style="display: none;">
         <div class="progress-header-bar">
