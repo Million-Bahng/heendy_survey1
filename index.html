@@ -22,22 +22,23 @@
         body::before {
             content: '';
             position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+            bottom: 20px;
+            left: 20px;
             width: min(300px, 30vw);
             height: min(300px, 30vh);
             background: url('./images/heendy-background.png') center/contain no-repeat;
-            opacity: 0.1;
+            opacity: 0.25;
             z-index: 0;
             pointer-events: none;
         }
 
         @media (max-width: 480px) {
             body::before {
+                bottom: 15px;
+                left: 15px;
                 width: min(250px, 25vw);
                 height: min(250px, 25vh);
-                opacity: 0.08;
+                opacity: 0.2;
             }
         }
 
