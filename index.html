@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>흰디에게 쓰는 편지</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea, #764ba2, #f093fb);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: min(300px, 30vw);
+            height: min(300px, 30vh);
+            background: url('./images/heendy-background.png') center/contain no-repeat;
+            opacity: 0.1;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        @media (max-width: 480px) {
+            body::before {
+                width: min(250px, 25vw);
+                height: min(250px, 25vh);
+                opacity: 0.08;
+            }
+        }
+
+
+
+        .page {
+            display: none;
+            min-height: 100vh;
+            position: relative;
+            padding: 20px;
+            justify-content: center;
+            align-items: center;
+            z-index: 1;
+        }
+
+        .page.active {
+            display: flex;
+        }
+
+        .landing-page {
+            background: url('./images/landing-background.jpg') center/cover no-repeat;
+            background-size: cover;
+            background-position: center;
+            padding: 0;
+        }
+
+        .landing-content {
+            position: absolute;
+            bottom: 40px;
+            left: 20px;
+            right: 20px;
+            text-align: center;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: white;
+            border-radius: 3px;
+            width: 0%;
+            transition: width 3s linear;
+        }
+
+        .progress-text {
+            color: white;
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 24px;
+            padding: 32px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .title {
+            color: white;
+            font-size: 28px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 16px;
+            line-height: 1.3;
+        }
+
+        .subtitle {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 16px;
+            text-align: center;
+            margin-bottom: 24px;
+            line-height: 1.4;
+        }
+
+        .input-group {
+            margin-bottom: 16px;
+        }
+
+        .input-group label {
+            display: block;
+            color: white;
+            font-size: 14px;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .input-group input, .input-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: none;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.9);
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input:focus, .input-group textarea:focus {
+            background: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .input-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #4facfe, #00f2fe);
+            color: white;
+            margin-bottom: 12px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 15px rgba(79, 172, 254, 0.3);
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 8px 25px rgba(79, 172, 254, 0.4);
+            transform: translateY(-3px);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.95);
+            color: #333;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: white;
+            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.3);
+        }
+
+        .notice {
+            background: rgba(128, 128, 128, 0.1);
+            color: rgba(255, 255, 255, 0.8);
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            margin-top: 16px;
+            text-align: left;
+        }
+
+        .progress-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 16px 20px;
+            z-index: 100;
+        }
+
+        .progress-header-bar {
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .progress-header-fill {
+            height: 100%;
+            background: white;
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+
+        .question-number {
+            color: white;
+            font-size: 14px;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .quiz-options.two-options {
+            flex-direction: row;
+            gap: 8px;
+        }
+
+        .quiz-option {
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.95);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            box-shadow: 0 2px 10px rgba(255, 255, 255, 0.1);
+        }
+
+        .quiz-option:hover {
+            background: white;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 255, 255, 0.2);
+            border-color: #4facfe;
+        }
+
+        .quiz-options.two-options .quiz-option {
+            flex: 1;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .quiz-options.four-options .quiz-option {
+            padding: 12px;
+            font-size: 14px;
+        }
+
+        .result-card {
+            text-align: center;
+        }
+
+        .score-display {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            border-radius: 16px;
+            margin: 20px 0;
+        }
+
+        .score-number {
+            font-size: 48px;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 8px;
+        }
+
+        .score-text {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .score-message {
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+            margin: 16px 0;
+        }
+
+        .event-info {
+            background: white;
+            color: #333;
+            padding: 16px;
+            border-radius: 12px;
+            border: 2px solid #4a90e2;
+            margin: 20px 0;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #ffd700, #ffed4a);
+            padding: 32px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 320px;
+            margin: 20px;
+            animation: bounceIn 0.6s ease-out;
+        }
+
+        .modal-content.lose {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        @keyframes bounceIn {
+            0% {
+                transform: scale(0.3);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            70% {
+                transform: scale(0.9);
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 16px;
+            color: #333;
+        }
+
+        .modal-content.lose .modal-title {
+            color: white;
+        }
+
+        .modal-text {
+            font-size: 16px;
+            line-height: 1.4;
+            color: #333;
+        }
+
+        .modal-content.lose .modal-text {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .close-modal {
+            margin-top: 20px;
+            padding: 12px 24px;
+            background: #333;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .modal-content.lose .close-modal {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+
+
+        .quiz-option.correct {
+            background: linear-gradient(45deg, #4CAF50, #45a049) !important;
+            color: white !important;
+            border-color: #4CAF50 !important;
+            animation: correctPulse 0.6s ease-out;
+        }
+
+        .quiz-option.incorrect {
+            background: linear-gradient(45deg, #f44336, #d32f2f) !important;
+            color: white !important;
+            border-color: #f44336 !important;
+            animation: incorrectShake 0.6s ease-out;
+        }
+
+        .quiz-option.show-correct {
+            background: linear-gradient(45deg, #4CAF50, #45a049) !important;
+            color: white !important;
+            border-color: #4CAF50 !important;
+            animation: showCorrectPulse 0.8s ease-out;
+        }
+
+        @keyframes correctPulse {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.7);
+            }
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 0 0 10px rgba(76, 175, 80, 0.3);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 20px rgba(76, 175, 80, 0);
+            }
+        }
+
+        @keyframes incorrectShake {
+            0%, 100% {
+                transform: translateX(0);
+            }
+            10%, 30%, 50%, 70%, 90% {
+                transform: translateX(-5px);
+            }
+            20%, 40%, 60%, 80% {
+                transform: translateX(5px);
+            }
+        }
+
+        @keyframes showCorrectPulse {
+            0% {
+                transform: scale(1);
+                opacity: 0.5;
+            }
+            50% {
+                transform: scale(1.02);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .feedback-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px 30px;
+            border-radius: 20px;
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+            z-index: 1000;
+            opacity: 0;
+            animation: feedbackShow 1.5s ease-out;
+            pointer-events: none;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .feedback-message.correct {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+        }
+
+        .feedback-message.incorrect {
+            background: linear-gradient(45deg, #ff9800, #f57c00);
+            color: white;
+        }
+
+        @keyframes feedbackShow {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.5);
+            }
+            20% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1.1);
+            }
+            40% {
+                transform: translate(-50%, -50%) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+            .card {
+                padding: 24px;
+                margin: 10px;
+            }
+            
+            .title {
+                font-size: 24px;
+            }
+            
+            .quiz-options.two-options .quiz-option {
+                font-size: 13px;
+                padding: 12px 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+
+    <!-- 숨겨진 Netlify Form -->
+    <form name="heendy-survey" netlify hidden>
+        <input type="text" name="employeeId" />
+        <input type="text" name="name" />
+        <textarea name="survey1"></textarea>
+        <textarea name="survey2"></textarea>
+        <input type="number" name="score" />
+        <input type="text" name="quizTaken" />
+        <input type="text" name="isWinner" />
+        <input type="number" name="responseTime" />
+        <input type="text" name="timestamp" />
+    </form>
+
+    <!-- 당첨자 수 체크용 숨겨진 폼 -->
+    <form name="winner-check" netlify hidden>
+        <input type="text" name="checkType" />
+    </form>
+    <div class="progress-header" id="progressHeader" style="display: none;">
+        <div class="progress-header-bar">
+            <div class="progress-header-fill" id="progressHeaderFill"></div>
+        </div>
+    </div>
+
+    <!-- 랜딩 페이지 -->
+    <div class="page landing-page active" id="landingPage">
+        <div class="landing-content">
+            <div class="progress-bar">
+                <div class="progress-fill" id="landingProgress"></div>
+            </div>
+            <div class="progress-text">3초 후 시작페이지로 이동합니다</div>
+        </div>
+    </div>
+
+    <!-- 시작 페이지 -->
+    <div class="page" id="startPage">
+        <div class="card">
+            <h1 class="title">흰디에게 쓰는 편지</h1>
+            <p class="subtitle">설문에 참여하신 분께 <br> 추첨을 통해 흰디 동전지갑을 50분께 드립니다!</p>
+            
+            <div class="input-group">
+                <label for="employeeId">사번</label>
+                <input type="text" id="employeeId" required>
+            </div>
+            
+            <div class="input-group">
+                <label for="name">이름</label>
+                <input type="text" id="name" required>
+            </div>
+            
+            <button class="btn btn-primary" id="startBtn" onclick="startSurvey()" disabled>시작하기</button>
+            
+            <div class="notice">
+                입력하신 정보는 당첨자 확인을 위해 7/22(화)까지 사용될 수 있습니다
+            </div>
+        </div>
+    </div>
+
+    <!-- 설문 페이지 1 -->
+    <div class="page" id="survey1Page">
+        <div class="card">
+            <div class="question-number">설문 1/2</div>
+            <h2 class="title">제작하면 좋을 것 같은 흰디 상품에 대한 아이디어 부탁드립니다</h2>
+            
+            <div class="input-group">
+                <textarea id="survey1" placeholder="예시) 젤리캣 같은 인형" required></textarea>
+            </div>
+            
+            <button class="btn btn-primary" id="survey1NextBtn" onclick="nextSurvey1()" disabled>다음</button>
+        </div>
+    </div>
+
+    <!-- 설문 페이지 2 -->
+    <div class="page" id="survey2Page">
+        <div class="card">
+            <div class="question-number">설문 2/2</div>
+            <h2 class="title">흰디에게 바라는 콘텐츠 또는 스토리가 있다면 알려주세요</h2>
+            
+            <div class="input-group">
+                <textarea id="survey2" placeholder="예시) 백화점을 쇼핑하는 스토리" required></textarea>
+            </div>
+            
+            <button class="btn btn-primary" id="survey2NextBtn" onclick="nextSurvey2()" disabled>다음</button>
+        </div>
+    </div>
+
+    <!-- 퀴즈 시작 페이지 -->
+    <div class="page" id="quizStartPage">
+        <div class="card">
+            <h1 class="title">퀴즈 문제에 도전하시면 <br> 동전지갑 당첨 확률이 🆙</h1>
+            <p class="subtitle">문제를 선택하면 다음 문제로 넘어갑니다!</p>
+            
+            <button class="btn btn-primary" onclick="startQuiz()">도전하기</button>
+            <button class="btn btn-secondary" onclick="skipQuiz()">그만하기</button>
+        </div>
+    </div>
+
+    <!-- 퀴즈 문제 페이지들 -->
+    <div class="page" id="quizPage">
+        <div class="card">
+            <div class="question-number" id="questionNumber">문제 1/10</div>
+            <h2 class="title" id="questionTitle">문제를 로딩중입니다...</h2>
+            <div class="quiz-options" id="quizOptions">
+                <!-- 동적으로 생성됨 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 결과 페이지 -->
+    <div class="page" id="resultPage">
+        <div class="card result-card">
+            <h1 class="title">참여해주셔서 감사합니다</h1>
+            
+            <div id="scoreDisplay" class="score-display" style="display: none;">
+                <div class="score-number" id="scoreNumber">0</div>
+                <div class="score-text" id="scoreText">10문제 중 0문제 정답</div>
+                <div class="score-message" id="scoreMessage">더 공부해주세요!</div>
+            </div>
+            
+            <div class="event-info">
+                7/21(월)~7/22(화)에<br>본사 사옥 1층 직원행사에서 만나요!
+            </div>
+        </div>
+    </div>
+
+    <!-- 당첨/비당첨 모달 -->
+    <div class="modal" id="resultModal">
+        <div class="modal-content" id="modalContent">
+            <div class="modal-title" id="modalTitle">결과</div>
+            <div class="modal-text" id="modalText">결과를 확인하는 중입니다...</div>
+            <button class="close-modal" onclick="closeModal()">확인</button>
+        </div>
+    </div>
+
+    <script>
+        // 전역 변수
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let userAnswers = [];
+        let startTime = new Date();
+        let userData = {
+            employeeId: '',
+            name: '',
+            survey1: '',
+            survey2: '',
+            quizTaken: false,
+            score: 0,
+            isWinner: false
+        };
+
+        // 퀴즈 문제 데이터
+        const quizQuestions = [
+            {
+                question: "흰디가 탄생한 연도는?",
+                options: ["2019", "2022", "2023", "2025"],
+                correct: 0
+            },
+            {
+                question: "흰디는 무슨 동물을 모티브로 삼았을까요?",
+                options: ["개", "고양이", "곰"],
+                correct: 0
+            },
+            {
+                question: "흰디는 무슨 종일까요?",
+                options: ["진돗개", "삽살개", "웨스트 하이랜드 화이트 테리어", "아이리시 소프트 코티드 휘튼 테리어"],
+                correct: 2
+            },
+            {
+                question: "흰디의 영문명은 무엇일까요?",
+                options: ["Heendy", "Heundi", "WhiteD"],
+                correct: 0
+            },
+            {
+                question: "다음중 흰디를 설명하는 수식어는 무엇일까요?",
+                options: ["호락호락하지 않은 행복캐", "상상력이 풍부한 공감캐", "세상이 알고 싶은 호기심캐", "지루한 건 못 참는 행동캐"],
+                correct: 0
+            },
+            {
+                question: "다음중 흰디의 인스타그램 계정주소는 무엇일까요?",
+                options: ["@heendy.life", "@heendy.white", "@heendy.begins"],
+                correct: 0
+            },
+            {
+                question: "흰디의 상품은 몇가지가 있을까요?",
+                options: ["상품은 없고 사은품만 있다", "20개", "120개"],
+                correct: 2
+            },
+            {
+                question: "흰디의 상품은 현재 어디서 만나볼 수 있을까요?",
+                options: ["판매하는 곳이 없다", "더현대서울 5층 더현대 프레젠트", "김포점 핑크하우스", "더현대서울 5층 흰디샵"],
+                correct: 1
+            },
+            {
+                question: "흰디와 콜라보레이션한 캐릭터는 무엇일까요?",
+                options: ["빵빵이", "최고심", "미키마우스"],
+                correct: 1
+            },
+            {
+                question: "아래에서 존재하지 않는 흰디 상품은 무엇일까요?",
+                options: ["흰디 페이스쿠션", "흰디 말랑베개", "흰디 납작 인형", "흰디 폭신 키링"],
+                correct: 3
+            }
+        ];
+
+        // Netlify Forms으로 데이터 전송
+        async function submitToNetlify() {
+            const formData = new FormData();
+            formData.append('form-name', 'heendy-survey');
+            formData.append('employeeId', userData.employeeId);
+            formData.append('name', userData.name);
+            formData.append('survey1', userData.survey1);
+            formData.append('survey2', userData.survey2);
+            formData.append('score', userData.score);
+            formData.append('quizTaken', userData.quizTaken ? '참여' : '미참여');
+            formData.append('isWinner', userData.isWinner ? '당첨' : '비당첨');
+            formData.append('responseTime', Math.round((new Date() - startTime) / 1000));
+            formData.append('timestamp', new Date().toLocaleString('ko-KR'));
+
+            try {
+                const response = await fetch('/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: new URLSearchParams(formData).toString()
+                });
+                
+                if (response.ok) {
+                    console.log('데이터가 성공적으로 제출되었습니다.');
+                } else {
+                    console.error('데이터 제출 실패:', response.status);
+                }
+            } catch (error) {
+                console.error('네트워크 오류:', error);
+                // 오류가 발생해도 사용자 경험을 방해하지 않음
+            }
+        }
+
+        // 페이지 전환 함수
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById(pageId).classList.add('active');
+            
+            // 진행률 헤더 표시/숨김
+            const showProgress = ['survey1Page', 'survey2Page', 'quizPage'].includes(pageId);
+            document.getElementById('progressHeader').style.display = showProgress ? 'block' : 'none';
+            
+            if (showProgress) {
+                updateProgressHeader();
+            }
+        }
+
+        function updateProgressHeader() {
+            let progress = 0;
+            const currentPage = document.querySelector('.page.active').id;
+            
+            if (currentPage === 'survey1Page') progress = 10;
+            else if (currentPage === 'survey2Page') progress = 20;
+            else if (currentPage === 'quizPage') progress = 20 + (currentQuestionIndex + 1) * 8;
+            
+            document.getElementById('progressHeaderFill').style.width = progress + '%';
+        }
+
+        // 랜딩 페이지 로직
+        function startLandingTimer() {
+            const progressBar = document.getElementById('landingProgress');
+            
+            // 즉시 애니메이션 시작 (0%에서 100%까지 3초동안)
+            setTimeout(() => {
+                progressBar.style.width = '100%';
+            }, 100);
+            
+            setTimeout(() => {
+                showPage('startPage');
+            }, 3000);
+        }
+
+        // 시작 페이지 로직
+        function validateStartForm() {
+            const employeeId = document.getElementById('employeeId').value.trim();
+            const name = document.getElementById('name').value.trim();
+            const startBtn = document.getElementById('startBtn');
+            
+            if (employeeId && name) {
+                startBtn.disabled = false;
+                userData.employeeId = employeeId;
+                userData.name = name;
+            } else {
+                startBtn.disabled = true;
+            }
+        }
+
+        function startSurvey() {
+            showPage('survey1Page');
+        }
+
+        // 설문 페이지 로직
+        function validateSurvey1() {
+            const survey1 = document.getElementById('survey1').value.trim();
+            const nextBtn = document.getElementById('survey1NextBtn');
+            
+            if (survey1) {
+                nextBtn.disabled = false;
+                userData.survey1 = survey1;
+            } else {
+                nextBtn.disabled = true;
+            }
+        }
+
+        function validateSurvey2() {
+            const survey2 = document.getElementById('survey2').value.trim();
+            const nextBtn = document.getElementById('survey2NextBtn');
+            
+            if (survey2) {
+                nextBtn.disabled = false;
+                userData.survey2 = survey2;
+            } else {
+                nextBtn.disabled = true;
+            }
+        }
+
+        function nextSurvey1() {
+            showPage('survey2Page');
+        }
+
+        function nextSurvey2() {
+            showPage('quizStartPage');
+        }
+
+        // 퀴즈 로직
+        function startQuiz() {
+            userData.quizTaken = true;
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers = [];
+            showPage('quizPage');
+            displayQuestion();
+        }
+
+        function skipQuiz() {
+            userData.quizTaken = false;
+            showResultPage();
+        }
+
+        function displayQuestion() {
+            const question = quizQuestions[currentQuestionIndex];
+            document.getElementById('questionNumber').textContent = `문제 ${currentQuestionIndex + 1}/10`;
+            document.getElementById('questionTitle').textContent = question.question;
+            
+            const optionsContainer = document.getElementById('quizOptions');
+            optionsContainer.innerHTML = '';
+            
+            // 옵션 개수에 따른 클래스 설정
+            const optionCount = question.options.length;
+            if (optionCount === 2) {
+                optionsContainer.className = 'quiz-options two-options';
+            } else if (optionCount === 3) {
+                optionsContainer.className = 'quiz-options three-options';
+            } else {
+                optionsContainer.className = 'quiz-options four-options';
+            }
+            
+            question.options.forEach((option, index) => {
+                const button = document.createElement('button');
+                button.className = 'quiz-option';
+                button.textContent = option;
+                button.onclick = () => selectAnswer(index);
+                optionsContainer.appendChild(button);
+            });
+            
+            updateProgressHeader();
+        }
+
+        // 햅틱 피드백 함수
+        function triggerHapticFeedback(type = 'light') {
+            if ('vibrate' in navigator) {
+                switch(type) {
+                    case 'correct':
+                        navigator.vibrate([50, 30, 50]); // 짧은-짧은-짧은 (성공)
+                        break;
+                    case 'incorrect':
+                        navigator.vibrate([100, 50, 100, 50, 100]); // 길고 반복 (실패)
+                        break;
+                    case 'light':
+                        navigator.vibrate(50); // 가벼운 터치
+                        break;
+                }
+            }
+        }
+
+        // 피드백 메시지 표시 함수
+        function showFeedbackMessage(message, type) {
+            const feedbackDiv = document.createElement('div');
+            feedbackDiv.className = `feedback-message ${type}`;
+            feedbackDiv.textContent = message;
+            document.body.appendChild(feedbackDiv);
+            
+            setTimeout(() => {
+                document.body.removeChild(feedbackDiv);
+            }, 1500);
+        }
+
+        function selectAnswer(selectedIndex) {
+            const question = quizQuestions[currentQuestionIndex];
+            userAnswers.push(selectedIndex);
+            
+            const options = document.querySelectorAll('.quiz-option');
+            const isCorrect = selectedIndex === question.correct;
+            
+            // 선택한 답안에 즉시 스타일 적용
+            if (isCorrect) {
+                options[selectedIndex].classList.add('correct');
+                score++;
+                triggerHapticFeedback('correct');
+                showFeedbackMessage('맞았어요! 🎉', 'correct');
+            } else {
+                options[selectedIndex].classList.add('incorrect');
+                triggerHapticFeedback('incorrect');
+                showFeedbackMessage('아쉬워요! 😅', 'incorrect');
+                
+                // 1초 후 정답 표시
+                setTimeout(() => {
+                    options[question.correct].classList.add('show-correct');
+                }, 1000);
+            }
+            
+            // 모든 버튼 비활성화
+            options.forEach(option => {
+                option.style.pointerEvents = 'none';
+            });
+            
+            // 정답/오답에 따른 대기 시간 조정
+            const waitTime = isCorrect ? 1500 : 2500;
+            
+            setTimeout(() => {
+                currentQuestionIndex++;
+                if (currentQuestionIndex < quizQuestions.length) {
+                    displayQuestion();
+                } else {
+                    finishQuiz();
+                }
+            }, waitTime);
+        }
+
+        function finishQuiz() {
+            userData.score = Math.round((score / quizQuestions.length) * 100);
+            showResultPage();
+        }
+
+        // 당첨자 수 체크 및 당첨 로직
+        async function checkWinning() {
+            try {
+                // Netlify Forms API로 당첨자 수 확인
+                const response = await fetch('/.netlify/functions/check-winners');
+                let winnerCount = 50; // 기본값으로 50명 제한
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    winnerCount = data.winnerCount || 0;
+                }
+                
+                // 50명 이상이면 무조건 비당첨
+                if (winnerCount >= 50) {
+                    userData.isWinner = false;
+                    return;
+                }
+                
+                // 확률 계산 (남은 자리가 적을수록 확률 감소)
+                const remainingSlots = 50 - winnerCount;
+                const baseProbability = userData.quizTaken ? 0.5 : 0.25;
+                
+                // 남은 자리가 10개 이하면 확률 조정
+                let adjustedProbability = baseProbability;
+                if (remainingSlots <= 10) {
+                    adjustedProbability = baseProbability * (remainingSlots / 20);
+                }
+                
+                userData.isWinner = Math.random() < adjustedProbability;
+                
+            } catch (error) {
+                console.error('당첨자 수 확인 중 오류:', error);
+                // 네트워크 오류시 기본 확률로 진행
+                const baseProbability = userData.quizTaken ? 0.3 : 0.15; // 오류시 확률 낮춤
+                userData.isWinner = Math.random() < baseProbability;
+            }
+        }
+
+        // 결과 페이지 표시
+        async function showResultPage() {
+            showPage('resultPage');
+            
+            if (userData.quizTaken) {
+                document.getElementById('scoreDisplay').style.display = 'block';
+                document.getElementById('scoreNumber').textContent = userData.score + '점';
+                document.getElementById('scoreText').textContent = `10문제 중 ${score}문제 정답`;
+                
+                let message = '더 공부해주세요!';
+                if (userData.score >= 90) message = '완벽해요!';
+                else if (userData.score >= 70) message = '훌륭해요!';
+                else if (userData.score >= 50) message = '괜찮아요!';
+                
+                document.getElementById('scoreMessage').textContent = message;
+            }
+            
+            // 당첨 여부 확인 (비동기)
+            await checkWinning();
+            
+            // Netlify Forms로 전송
+            await submitToNetlify();
+            
+            setTimeout(() => {
+                showResultModal();
+            }, 1000);
+        }
+
+        function showResultModal() {
+            const modal = document.getElementById('resultModal');
+            const modalContent = document.getElementById('modalContent');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalText = document.getElementById('modalText');
+            
+            if (userData.isWinner) {
+                modalContent.className = 'modal-content';
+                modalTitle.textContent = '축하드립니다🎉';
+                modalText.innerHTML = '흰디 동전지갑에 당첨되셨습니다!<br><br>직원행사장(본사 1층, 7/21~22)에서 <br>사번과 함께 현재 화면을 캡처해서 보여주세요.';
+            } else {
+                modalContent.className = 'modal-content lose';
+                modalTitle.textContent = '아쉬워요😭';
+                modalText.innerHTML = '안타깝게 당첨되진 않았습니다.😭 <br> 하지만, 흰디에 대한 관심을 <br> 직원행사장(본사 1층, 7/21~22)에서 이어가주세요!';
+            }
+            
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('resultModal').classList.remove('active');
+        }
+
+        // 이벤트 리스너 설정
+        document.addEventListener('DOMContentLoaded', function() {
+            startLandingTimer();
+            
+            // 입력 필드 이벤트 리스너
+            document.getElementById('employeeId').addEventListener('input', validateStartForm);
+            document.getElementById('name').addEventListener('input', validateStartForm);
+            document.getElementById('survey1').addEventListener('input', validateSurvey1);
+            document.getElementById('survey2').addEventListener('input', validateSurvey2);
+            
+            // 모달 외부 클릭시 닫기
+            document.getElementById('resultModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeModal();
+                }
+            });
+            
+            // 버튼 클릭시 가벼운 햅틱 피드백
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('btn') || e.target.classList.contains('quiz-option')) {
+                    triggerHapticFeedback('light');
+                }
+            });
+            document.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    const activePageId = document.querySelector('.page.active').id;
+                    
+                    if (activePageId === 'startPage' && !document.getElementById('startBtn').disabled) {
+                        startSurvey();
+                    } else if (activePageId === 'survey1Page' && !document.getElementById('survey1NextBtn').disabled) {
+                        nextSurvey1();
+                    } else if (activePageId === 'survey2Page' && !document.getElementById('survey2NextBtn').disabled) {
+                        nextSurvey2();
+                    }
+                }
+            });
+        });
+
+
+    </script>
+</body>
+</html>
