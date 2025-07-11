@@ -1,10 +1,30 @@
-[build]
-  functions = "netlify/functions"
-  
-[build.environment]
-  NODE_VERSION = "18"
+# netlify.toml
+# Netlify 배포 설정 파일
 
+[build]
+  # 빌드 설정 (정적 사이트이므로 빌드 불필요)
+  publish = "."
+  
+[functions]
+  # Functions 폴더 설정
+  directory = "netlify/functions"
+
+# 환경 변수 (실제 배포시 Netlify 대시보드에서 설정)
+[build.environment]
+  # 이 값들은 Netlify 대시보드 > Site settings > Environment variables에서 설정
+  # NETLIFY_SITE_ID = "your-site-id"
+  # NETLIFY_ACCESS_TOKEN = "your-access-token"
+
+# 리다이렉트 설정 (필요시)
 [[redirects]]
   from = "/api/*"
   to = "/.netlify/functions/:splat"
   status = 200
+
+# 헤더 설정
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
