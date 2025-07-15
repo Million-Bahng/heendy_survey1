@@ -32,8 +32,6 @@
             pointer-events: none;
         }
 
-        
-
         @media (max-width: 480px) {
             body::before {
                 bottom: 15px;
@@ -43,8 +41,6 @@
                 opacity: 0.2;
             }
         }
-
-
 
         .page {
             display: none;
@@ -110,7 +106,6 @@
             animation: fadeInUp 0.6s ease-out;
         }
 
-        
         .btn-instagram {
             background: linear-gradient(45deg, #E4405F, #F56040, #FCAF45);
             color: white;
@@ -133,16 +128,7 @@
             margin-right: 8px;
             font-size: 18px;
         }
-            body::before {
-                bottom: 15px;
-                left: 15px;
-                width: min(250px, 25vw);
-                height: min(250px, 25vh);
-                opacity: 0.2;
-            }
-        }
 
-        
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -465,8 +451,6 @@
             color: white;
         }
 
-
-
         .quiz-option.correct {
             background: linear-gradient(45deg, #4CAF50, #45a049) !important;
             color: white !important;
@@ -575,6 +559,8 @@
                 transform: translate(-50%, -50%) scale(1);
             }
         }
+
+        @media (max-width: 480px) {
             .card {
                 padding: 24px;
                 margin: 10px;
@@ -592,8 +578,6 @@
     </style>
 </head>
 <body>
-
-
     <!-- 숨겨진 Netlify Form -->
     <form name="heendy-survey" netlify netlify-honeypot="bot-field" hidden>
         <p hidden>
@@ -609,6 +593,7 @@
         <input type="number" name="responseTime" />
         <input type="text" name="timestamp" />
     </form>
+    
     <div class="progress-header" id="progressHeader" style="display: none;">
         <div class="progress-header-bar">
             <div class="progress-header-fill" id="progressHeaderFill"></div>
@@ -629,7 +614,7 @@
     <div class="page" id="startPage">
         <div class="card">
             <h1 class="title">흰디에게 쓰는 편지</h1>
-            <p class="subtitle">설문에 참여하신 분께 <br> 추첨을 통해 흰디 동전지갑을 50분께 드립니다!</p>
+            <p class="subtitle">흰디 설문에 참여해주세요</p>
             
             <div class="input-group">
                 <label for="employeeId">사번</label>
@@ -644,7 +629,8 @@
             <button class="btn btn-primary" id="startBtn" onclick="startSurvey()" disabled>시작하기</button>
             
             <div class="notice">
-                입력하신 정보는 당첨자 확인을 위해 7/22(화)까지 사용될 수 있습니다
+                입력하신 정보는 7/22(화)까지 사용될 수 있습니다 <br>
+                동전지갑 추첨은 완료되었습니다
             </div>
         </div>
     </div>
@@ -680,7 +666,7 @@
     <!-- 퀴즈 시작 페이지 -->
     <div class="page" id="quizStartPage">
         <div class="card">
-            <h1 class="title">퀴즈 문제에 도전하시면 <br> 동전지갑 당첨 확률이 🆙</h1>
+            <h1 class="title">흰디에 대해 잘 아시나요?<br> 퀴즈 풀고 가실래요?</h1>
             <p class="subtitle">문제를 선택하면 다음 문제로 넘어갑니다!</p>
             
             <button class="btn btn-primary" onclick="startQuiz()">도전하기</button>
@@ -726,6 +712,15 @@
             <div class="modal-title" id="modalTitle">결과</div>
             <div class="modal-text" id="modalText">결과를 확인하는 중입니다...</div>
             <button class="close-modal" onclick="closeModal()">확인</button>
+        </div>
+    </div>
+
+    <!-- 시작페이지 안내 모달 -->
+    <div class="modal" id="startModal">
+        <div class="modal-content lose">
+            <div class="modal-title">안내</div>
+            <div class="modal-text">열화와 같은 성원으로 동전지갑 당첨자는 모두 추첨되어, 당첨은 마감합니다. 하지만 흰디에 대한 여러분의 목소리는 계속 듣고 있어요! 흰디를 위해서 소중한 의견 남겨주세요~!</div>
+            <button class="close-modal" onclick="closeStartModal()">확인</button>
         </div>
     </div>
 
@@ -827,7 +822,6 @@
                 }
             } catch (error) {
                 console.error('네트워크 오류:', error);
-                // 오류가 발생해도 사용자 경험을 방해하지 않음
             }
         }
 
@@ -838,7 +832,6 @@
             });
             document.getElementById(pageId).classList.add('active');
             
-            // 진행률 헤더 표시/숨김
             const showProgress = ['survey1Page', 'survey2Page', 'quizPage'].includes(pageId);
             document.getElementById('progressHeader').style.display = showProgress ? 'block' : 'none';
             
@@ -862,13 +855,16 @@
         function startLandingTimer() {
             const progressBar = document.getElementById('landingProgress');
             
-            // 즉시 애니메이션 시작 (0%에서 100%까지 3초동안)
             setTimeout(() => {
                 progressBar.style.width = '100%';
             }, 100);
             
             setTimeout(() => {
                 showPage('startPage');
+                // startPage 진입 시 모달 표시
+                setTimeout(() => {
+                    showStartModal();
+                }, 500);
             }, 3000);
         }
 
@@ -947,7 +943,6 @@
             const optionsContainer = document.getElementById('quizOptions');
             optionsContainer.innerHTML = '';
             
-            // 옵션 개수에 따른 클래스 설정
             const optionCount = question.options.length;
             if (optionCount === 2) {
                 optionsContainer.className = 'quiz-options two-options';
@@ -973,13 +968,13 @@
             if ('vibrate' in navigator) {
                 switch(type) {
                     case 'correct':
-                        navigator.vibrate([50, 30, 50]); // 짧은-짧은-짧은 (성공)
+                        navigator.vibrate([50, 30, 50]);
                         break;
                     case 'incorrect':
-                        navigator.vibrate([100, 50, 100, 50, 100]); // 길고 반복 (실패)
+                        navigator.vibrate([100, 50, 100, 50, 100]);
                         break;
                     case 'light':
-                        navigator.vibrate(50); // 가벼운 터치
+                        navigator.vibrate(50);
                         break;
                 }
             }
@@ -1004,7 +999,6 @@
             const options = document.querySelectorAll('.quiz-option');
             const isCorrect = selectedIndex === question.correct;
             
-            // 선택한 답안에 즉시 스타일 적용
             if (isCorrect) {
                 options[selectedIndex].classList.add('correct');
                 score++;
@@ -1015,18 +1009,15 @@
                 triggerHapticFeedback('incorrect');
                 showFeedbackMessage('아쉬워요! 😅', 'incorrect');
                 
-                // 1초 후 정답 표시
                 setTimeout(() => {
                     options[question.correct].classList.add('show-correct');
                 }, 1000);
             }
             
-            // 모든 버튼 비활성화
             options.forEach(option => {
                 option.style.pointerEvents = 'none';
             });
             
-            // 정답/오답에 따른 대기 시간 조정
             const waitTime = isCorrect ? 1500 : 2500;
             
             setTimeout(() => {
@@ -1044,42 +1035,9 @@
             showResultPage();
         }
 
-        // 당첨자 수 체크 및 당첨 로직
+        // 당첨 로직 (수정: 무조건 비당첨)
         async function checkWinning() {
-            try {
-                // Netlify Forms API로 당첨자 수 확인
-                const response = await fetch('/.netlify/functions/check-winners');
-                let winnerCount = 50; // 기본값으로 50명 제한
-                
-                if (response.ok) {
-                    const data = await response.json();
-                    winnerCount = data.winnerCount || 0;
-                }
-                
-                // 50명 이상이면 무조건 비당첨
-                if (winnerCount >= 50) {
-                    userData.isWinner = false;
-                    return;
-                }
-                
-                // 확률 계산 (남은 자리가 적을수록 확률 감소)
-                const remainingSlots = 50 - winnerCount;
-                const baseProbability = userData.quizTaken ? 0.5 : 0.25;
-                
-                // 남은 자리가 10개 이하면 확률 조정
-                let adjustedProbability = baseProbability;
-                if (remainingSlots <= 10) {
-                    adjustedProbability = baseProbability * (remainingSlots / 20);
-                }
-                
-                userData.isWinner = Math.random() < adjustedProbability;
-                
-            } catch (error) {
-                console.error('당첨자 수 확인 중 오류:', error);
-                // 네트워크 오류시 기본 확률로 진행
-                const baseProbability = userData.quizTaken ? 0.3 : 0.15; // 오류시 확률 낮춤
-                userData.isWinner = Math.random() < baseProbability;
-            }
+            userData.isWinner = false;
         }
 
         // 결과 페이지 표시
@@ -1099,10 +1057,7 @@
                 document.getElementById('scoreMessage').textContent = message;
             }
             
-            // 당첨 여부 확인 (비동기)
             await checkWinning();
-            
-            // Netlify Forms로 전송
             await submitToNetlify();
             
             setTimeout(() => {
@@ -1116,15 +1071,10 @@
             const modalTitle = document.getElementById('modalTitle');
             const modalText = document.getElementById('modalText');
             
-            if (userData.isWinner) {
-                modalContent.className = 'modal-content';
-                modalTitle.textContent = '축하드립니다🎉';
-                modalText.innerHTML = '흰디 동전지갑에 당첨되셨습니다!<br><br>직원행사장(본사 1층, 7/21~22)에서 <br>사번과 함께 현재 화면을 캡처해서 보여주세요.';
-            } else {
-                modalContent.className = 'modal-content lose';
-                modalTitle.textContent = '아쉬워요😭';
-                modalText.innerHTML = '안타깝게 당첨되진 않았습니다.😭 <br> 하지만, 흰디에 대한 관심을 <br> 직원행사장(본사 1층, 7/21~22)에서 이어가주세요!';
-            }
+            // 무조건 비당첨 모달 표시
+            modalContent.className = 'modal-content lose';
+            modalTitle.textContent = '아쉬워요😭';
+            modalText.innerHTML = '당첨자가 모두 나왔습니다😭 하지만, 흰디에 대한 관심을 직원행사장(본사 1층, 7/21~22)에서 이어가주세요!';
             
             modal.classList.add('active');
         }
@@ -1133,29 +1083,41 @@
             document.getElementById('resultModal').classList.remove('active');
         }
 
+        function showStartModal() {
+            document.getElementById('startModal').classList.add('active');
+        }
+
+        function closeStartModal() {
+            document.getElementById('startModal').classList.remove('active');
+        }
+
         // 이벤트 리스너 설정
         document.addEventListener('DOMContentLoaded', function() {
             startLandingTimer();
             
-            // 입력 필드 이벤트 리스너
             document.getElementById('employeeId').addEventListener('input', validateStartForm);
             document.getElementById('name').addEventListener('input', validateStartForm);
             document.getElementById('survey1').addEventListener('input', validateSurvey1);
             document.getElementById('survey2').addEventListener('input', validateSurvey2);
             
-            // 모달 외부 클릭시 닫기
             document.getElementById('resultModal').addEventListener('click', function(e) {
                 if (e.target === this) {
                     closeModal();
                 }
             });
+
+            document.getElementById('startModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeStartModal();
+                }
+            });
             
-            // 버튼 클릭시 가벼운 햅틱 피드백
             document.addEventListener('click', function(e) {
                 if (e.target.classList.contains('btn') || e.target.classList.contains('quiz-option')) {
                     triggerHapticFeedback('light');
                 }
             });
+            
             document.addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') {
                     const activePageId = document.querySelector('.page.active').id;
@@ -1170,8 +1132,6 @@
                 }
             });
         });
-
-
     </script>
 </body>
 </html>
